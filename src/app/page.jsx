@@ -18,7 +18,7 @@ export default function Home() {
         setSessionId(() => Math.random().toString(36).substr(2, 9));
     }, []);
 
-    const API_ENDPOINT = process.env.API_KEY;
+    const API_ENDPOINT = process.env.NEXT_PUBLIC_API_ENDPOINT;
 
     const handleRecord = async () => {
         if (recording) {
