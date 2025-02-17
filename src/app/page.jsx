@@ -58,17 +58,25 @@ export default function Home() {
 
     const sendAudioToBackend = async (audioBlob) => {
         setLoading(true);
+        if (!API_ENDPOINT) {
+            console.error("❌ APIエンドポイントが設定されていません");
+            return;
+        }
+
         const formData = new FormData();
         formData.append("file", audioBlob, "recorded_audio.webm");
 
         try {
+            console.log("📤 送信URL:", `${API_ENDPOINT}/upload-audio/`);
+            console.log("📤 送信データ:", audioBlob);
+
             const response = await fetch(`${API_ENDPOINT}/upload-audio/`, {
                 method: "POST",
                 body: formData,
             });
 
             if (!response.ok) {
-                throw new Error("音声アップロードに失敗しました");
+                throw new Error(`音声アップロードに失敗しました: ${response.status} ${response.statusText}`);
             }
 
             const data = await response.json();
@@ -91,6 +99,7 @@ export default function Home() {
         audio.play();
         audio.onended = () => setIsSpeaking(false);
     };
+
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-blue-100 to-blue-200">
