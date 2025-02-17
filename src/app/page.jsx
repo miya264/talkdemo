@@ -65,7 +65,7 @@ export default function Home() {
             <div className="w-full max-w-lg bg-white shadow-lg rounded-xl p-6 flex flex-col justify-between" style={{ minHeight: '600px' }}>
                 <div>
                     <h1 className="text-center text-lg font-bold mb-2">🧠 AIカウンセラー</h1>
-                    <p className="text-center text-gray-600">あなたの気持ちに寄り添い、一緒に考えていきましょう</p>
+                    <p className="text-center text-gray-600">あなたの不調に寄り添い、一緒に考えていきましょう</p>
                     <div className="w-full h-1 bg-gray-200 my-4" />
                     <div className="h-96 overflow-y-auto bg-gray-50 p-4 rounded-lg flex flex-col justify-center items-center">
                         <div className="text-center text-gray-400">
