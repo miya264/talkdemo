@@ -87,23 +87,38 @@ export default function Home() {
         formData.append("file", audioBlob, "recorded_audio.webm");
     
         try {
+            console.time("🔄 APIリクエスト時間"); // 計測開始
+            const startTime = performance.now(); // ミリ秒単位で時間を取得
+    
             const response = await fetch(`${API_ENDPOINT}/upload-audio/`, {
                 method: "POST",
                 body: formData,
             });
     
+            console.timeEnd("🔄 APIリクエスト時間"); // 計測終了
+            const endTime = performance.now(); // 終了時間
+    
+            console.log(`⏱️ APIリクエスト完了: ${(endTime - startTime) / 1000} 秒`);
+    
             if (!response.ok) {
                 throw new Error("音声アップロードに失敗しました");
             }
     
+            console.time("🧠 AI応答取得時間"); // AI応答の時間計測開始
+    
             const data = await response.json();
+    
+            console.timeEnd("🧠 AI応答取得時間"); // AI応答の時間計測終了
+            const aiResponseTime = performance.now();
+            console.log(`⏱️ AI応答取得完了: ${(aiResponseTime - endTime) / 1000} 秒`);
+    
             if (!data.transcribed_text) throw new Error("文字起こしに失敗しました");
     
             setConversationHistory((prev) => [...prev, { role: "user", content: data.transcribed_text }]);
             setConversationHistory((prev) => [...prev, { role: "assistant", content: data.ai_response }]);
     
             setConversationCount((prev) => prev + 1);
-
+    
             playAudio(`${API_ENDPOINT}${data.audio_url}`);
             setStatusMessage("✅ AIの応答が生成されました");
         } catch (error) {
@@ -112,13 +127,24 @@ export default function Home() {
         }
         setLoading(false);
     };
-
+    
     const playAudio = (url) => {
         setIsSpeaking(true);
         const audio = new Audio(url);
+    
+        console.time("🔊 音声再生時間"); // 音声再生時間計測開始
+        const startAudioTime = performance.now();
+    
         audio.play();
-        audio.onended = () => setIsSpeaking(false);
+        audio.onended = () => {
+            const endAudioTime = performance.now();
+            console.timeEnd("🔊 音声再生時間"); // 音声再生時間計測終了
+            console.log(`⏱️ 音声再生時間: ${(endAudioTime - startAudioTime) / 1000} 秒`);
+    
+            setIsSpeaking(false);
+        };
     };
+    
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-blue-100 to-blue-200">
